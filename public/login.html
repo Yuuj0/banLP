@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login do Organizador</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; font-family: Arial, sans-serif; color: #1f2937; background: #f4f7fb; }
+    main { width: min(420px, 92%); background: #fff; border: 1px solid #dde3ee; border-radius: 8px; padding: 28px; }
+    h1 { margin: 0 0 18px; font-size: 26px; }
+    label { display: block; margin: 14px 0 6px; font-weight: 700; }
+    input { width: 100%; padding: 11px; border: 1px solid #b8c2d4; border-radius: 6px; font-size: 16px; }
+    button, a { display: inline-block; margin-top: 18px; border: 0; border-radius: 6px; padding: 11px 14px; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; }
+    button { color: #fff; background: #2563eb; }
+    a { color: #2563eb; background: transparent; }
+    .erro { min-height: 20px; margin-top: 12px; color: #b91c1c; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Login do organizador</h1>
+    <form id="formLogin">
+      <label for="usuario">Usuário</label>
+      <input id="usuario" name="usuario" type="text" required>
+
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" required>
+
+      <button type="submit">Entrar</button>
+      <a href="/">Voltar</a>
+      <p id="erro" class="erro"></p>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('formLogin');
+    const erro = document.getElementById('erro');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const usuario = form.usuario.value.trim();
+      const senha = form.senha.value.trim();
+
+      if (!usuario || !senha) {
+        erro.textContent = 'Preencha usuario e senha.';
+        return;
+      }
+
+      localStorage.setItem('organizadorLogado', usuario);
+      window.location.href = '/cadastro-evento.html';
+    });
+  </script>
+</body>
+</html>

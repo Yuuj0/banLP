@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; color: #1f2937; background: #f4f7fb; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 8%; background: #fff; border-bottom: 1px solid #dde3ee; }
+    h1 { margin: 0; font-size: 28px; }
+    a { color: #fff; background: #2563eb; text-decoration: none; padding: 10px 14px; border-radius: 6px; font-weight: 700; }
+    main { width: min(1000px, 92%); margin: 32px auto; }
+    .intro { margin-bottom: 24px; font-size: 18px; line-height: 1.5; }
+    .lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .evento, .aviso { background: #fff; border: 1px solid #dde3ee; border-radius: 8px; padding: 18px; }
+    .evento h2 { margin: 0 0 10px; font-size: 20px; }
+    .evento p { margin: 8px 0; line-height: 1.4; }
+    .categoria { display: inline-block; margin-bottom: 8px; padding: 4px 8px; border-radius: 6px; background: #e8f0ff; color: #1d4ed8; font-weight: 700; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Eventos disponiveis</h1>
+    <a href="/login.html">Area do organizador</a>
+  </header>
+
+  <main>
+    <p class="intro">Confira os eventos cadastrados pelos organizadores.</p>
+    <section id="eventos" class="lista">
+      <div class="aviso">Carregando eventos...</div>
+    </section>
+  </main>
+
+  <script>
+    const container = document.getElementById('eventos');
+
+    function formatarData(data) {
+      return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+    }
+
+    async function carregarEventos() {
+      try {
+        const resposta = await fetch('/evento');
+        const eventos = await resposta.json();
+
+        if (!resposta.ok) {
+          throw new Error(eventos.mensagem || 'Nao foi possivel carregar os eventos.');
+        }
+
+        if (eventos.length === 0) {
+          container.innerHTML = '<div class="aviso">Nenhum evento cadastrado ainda.</div>';
+          return;
+        }
+
+        container.innerHTML = eventos.map((evento) => `
+          <article class="evento">
+            <span class="categoria">${evento.categoria}</span>
+            <h2>${evento.nome}</h2>
+            <p>${evento.descricao}</p>
+            <p><strong>Data:</strong> ${formatarData(evento.data_evento)}</p>
+            <p><strong>Local:</strong> ${evento.local}</p>
+            <p><strong>Vagas:</strong> ${evento.vagas}</p>
+          </article>
+        `).join('');
+      } catch (error) {
+        container.innerHTML = `<div class="aviso">${error.message}</div>`;
+      }
+    }
+
+    carregarEventos();
+  </script>
+</body>
+</html>
